@@ -34,7 +34,6 @@ class Transaction {
 
 class Block {
   constructor(timestamp, transactions, previousHash = null) {
-    this.nonce = 0;
     this.timestamp = timestamp;
     this.transactions = transactions;
     this.previousHash = previousHash;
@@ -47,11 +46,9 @@ class Block {
     ).toString();
   }
 
-  mineBlock(hardness) {
-    while (this.hash.substring(0, hardness) !== Array(hardness + 1).join('0')) {
-      this.nonce++;
-      this.hash = this.calculateHash();
-    }
+  mineBlock(guess_hash, hardness) {
+    if (guess_hash.substring(0, hardness) !== this.hash.substring(0, hardness))
+      return -1; // prettier-ignore
 
     return this.hash;
   }
@@ -84,14 +81,24 @@ class Blockchain {
     return this.chain[this.chain.length - 1];
   }
 
-  minePendingTransactions(rewardToAddress) {
+  infoRewardForMining() {
+    return this.rewardForMining;
+  }
+
+  minePendingTransactions(guess_hash, rewardToAddress) {
     const new_block = new Block(
       Date.now(),
       this.pendingTransactions,
       this.getLastBlock().hash
     );
 
-    const block_mined_hash = new_block.mineBlock(this.blockchain_difficult);
+    const block_mined_hash = new_block.mineBlock(
+      guess_hash,
+      this.blockchain_difficult
+    );
+
+    if (block_mined_hash == -1) return -1;
+
     this.chain.push(new_block);
 
     this.pendingTransactions = [
@@ -111,7 +118,7 @@ class Blockchain {
     this.pendingTransactions.push(transaction);
   }
 
-  getBallanceFromAddress(wallet_address) {
+  getBalanceFromAddress(wallet_address) {
     let balance = 0;
 
     for (const block of this.chain) {
