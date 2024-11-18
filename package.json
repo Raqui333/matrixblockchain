@@ -1,0 +1,24 @@
+{
+  "name": "matrixblockchain",
+  "version": "1.0.0",
+  "description": "guess what",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Raqui333/matrixblockchain.git"
+  },
+  "author": "@Raqui333 (Telegram)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Raqui333/matrixblockchain/issues"
+  },
+  "homepage": "https://github.com/Raqui333/matrixblockchain#readme",
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "express": "^4.21.1",
+    "node-rsa": "^1.1.1"
+  }
+}
