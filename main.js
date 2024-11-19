@@ -72,6 +72,34 @@ app.get('/getBalance/:address', (req, res) => {
   });
 });
 
+app.post('/send', (req, res) => {
+  const { fromAddress, toAddress, amount, private_key } = req.body;
+
+  const key = new RSA(
+    '-----BEGIN RSA PRIVATE KEY-----' +
+      private_key +
+      '-----END RSA PRIVATE KEY-----'
+  );
+
+  const balance = matrix.getBalanceFromAddress(fromAddress);
+
+  if (balance < amount)
+    return res.status(418).send({ message: 'Not enough balance' });
+
+  const new_transaction = new Transaction(fromAddress, toAddress, amount);
+
+  try {
+    new_transaction.signTransaction(key);
+    matrix.addTransaction(new_transaction);
+  } catch (err) {
+    return res.status(418).send({ message: err.message });
+  }
+
+  return res.status(200).send({
+    message: 'Transaction added to blockchain',
+  });
+});
+
 app.listen(PORT, () => {
   console.log('Blockchain API listening on http://localhost:' + PORT);
 });

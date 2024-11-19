@@ -13,7 +13,14 @@ class Transaction {
   }
 
   signTransaction(signer_key) {
-    if (signer_key.exportKey('public') !== this.fromAddress)
+    const regex = new RegExp(
+      '-----BEGIN .+ KEY-----|\n|-----END .+ KEY-----',
+      'g'
+    );
+
+    const public_key = signer_key.exportKey('public').replaceAll(regex, '');
+
+    if (public_key !== this.fromAddress)
       throw new Error('You cannot sign transactions from other wallets');
 
     this.transactionHash = this.calculateHash();
@@ -57,7 +64,7 @@ class Block {
 class Blockchain {
   constructor() {
     this.chain = [new Block(Date.parse('01/01/2024'), 'GenesisBlock')];
-    this.blockchain_difficult = 4;
+    this.blockchain_difficult = 2;
     this.pendingTransactions = [];
     this.rewardForMining = 50;
   }
@@ -109,6 +116,11 @@ class Blockchain {
   }
 
   addTransaction(transaction) {
+    for (const pen_transaction of this.pendingTransactions) {
+      if (pen_transaction.fromAddress == transaction.fromAddress)
+        throw new Error('Your previous transaction is still pending');
+    }
+
     if (!transaction.toAddress)
       throw new Error('Transaction must include toAddress');
 
@@ -116,6 +128,8 @@ class Blockchain {
       throw new Error('Cannot add invalid transaction to blockchain');
 
     this.pendingTransactions.push(transaction);
+
+    return 0;
   }
 
   getBalanceFromAddress(wallet_address) {
