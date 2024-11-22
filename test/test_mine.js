@@ -9,7 +9,7 @@ const blockchain_url =
 let nonce = 0;
 
 (async () => {
-  const start_time = Date.now();
+  console.time('mine');
 
   console.log('[' + new Date().toISOString() + '] Starting to mine block...');
 
@@ -33,17 +33,7 @@ let nonce = 0;
     ++nonce;
   }
 
-  const end_time = Date.now();
-
   console.log('[' + new Date().toISOString() + '] Block mined!');
 
-  const elapsed_time = end_time - start_time;
-
-  const seconds = Math.floor((elapsed_time / 1000) % 60);
-  const minutes = Math.floor((elapsed_time / (1000 * 60)) % 60);
-  const hours = Math.floor((elapsed_time / (1000 * 60 * 60)) % 24);
-
-  const elapsed_str = hours + 'h, ' + minutes + 'm, ' + seconds + 's';
-
-  console.log('[' + new Date().toISOString() + '] Total time: ' + elapsed_str);
+  console.timeEnd('mine');
 })();
