@@ -1,10 +1,11 @@
 const SHA256 = require('crypto-js/sha256');
 
-const address = 'address';
+const address =
+  'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfpEA9kIzN82SKf4XjtyEDaqX45l1HQycu+KeoHTh4jJAVku2sO4Iwf4s38Bx92Iqz+DfdOsV/77gsnvYGeIePRW/ygotETONWHRy/A31VlnMJYSFBtEh3bWFJfN/vQVyqg5wYVAiWNgsOcX/JKJwZCaT2YkRgEmJecvo/3BxGkwIDAQAB';
 
-const blockchain_url = 'http://localhost:8080/mine/' + address;
+const blockchain_url =
+  'http://localhost:8080/mine/' + encodeURIComponent(address);
 
-let response_status = 0;
 let nonce = 0;
 
 (async () => {
@@ -12,7 +13,8 @@ let nonce = 0;
 
   console.log('[' + new Date().toISOString() + '] Starting to mine block...');
 
-  while (response_status !== 200) {
+  let res_status = 0;
+  while (res_status !== 200) {
     const hash = SHA256(nonce).toString();
 
     const res = await fetch(blockchain_url, {
@@ -21,9 +23,9 @@ let nonce = 0;
       body: JSON.stringify({ guess_hash: hash }),
     });
 
-    response_status = res.status;
+    res_status = res.status;
 
-    if (response_status === 200) {
+    if (res_status === 200) {
       const data = await res.json();
       console.log('Success:', data);
     }
