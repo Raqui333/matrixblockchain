@@ -2,6 +2,8 @@ const { Blockchain, Transaction } = require('./src/blockchain.js');
 const RSA = require('node-rsa');
 
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
 const PORT = 8080;
 
@@ -12,6 +14,7 @@ console.log('Block chain created!');
 const genesis = new Transaction(null, 'raqui333', 50);
 matrix.addTransaction(genesis);
 
+app.use(cors());
 app.use(express.json()); // should be set before API methods
 
 app.use((req, res, next) => {
@@ -72,25 +75,34 @@ app.get('/getBalance/:address', (req, res) => {
   });
 });
 
-app.post('/send', (req, res) => {
-  const { fromAddress, toAddress, amount, private_key } = req.body;
+app.post('/createTransaction', (req, res) => {
+  const { fromAddress, toAddress, amount } = req.body;
+  const transaction = new Transaction(fromAddress, toAddress, amount);
+  res.status(200).send(transaction);
+});
 
-  const key = new RSA(
-    '-----BEGIN RSA PRIVATE KEY-----' +
-      private_key +
-      '-----END RSA PRIVATE KEY-----'
-  );
+app.post('/addTransaction', (req, res) => {
+  const { transaction, signature } = req.body;
 
-  const balance = matrix.getBalanceFromAddress(fromAddress);
+  const key = new RSA();
 
-  if (balance < amount)
+  const keydata =
+    '-----BEGIN PUBLIC KEY-----' +
+    transaction.fromAddress +
+    '-----END PUBLIC KEY-----';
+
+  key.importKey(keydata, 'pkcs8-public');
+
+  if (!key.verify(transaction.hash, signature, 'utf8', 'base64'))
+    return res.status(418).send({ message: 'invalid signature' });
+
+  const balance = matrix.getBalanceFromAddress(transaction.fromAddress);
+
+  if (balance < transaction.amount)
     return res.status(418).send({ message: 'Not enough balance' });
 
-  const new_transaction = new Transaction(fromAddress, toAddress, amount);
-
   try {
-    new_transaction.signTransaction(key);
-    matrix.addTransaction(new_transaction);
+    matrix.addTransaction(transaction);
   } catch (err) {
     return res.status(418).send({ message: err.message });
   }

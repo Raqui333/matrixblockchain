@@ -6,36 +6,13 @@ class Transaction {
     this.fromAddress = fromAddress;
     this.toAddress = toAddress;
     this.amount = amount;
+    this.hash = this.calculateHash();
   }
 
   calculateHash() {
-    return SHA256(this.fromAddress + this.toAddress + this.amount).toString();
-  }
-
-  signTransaction(signer_key) {
-    const regex = new RegExp(
-      '-----BEGIN .+ KEY-----|\n|-----END .+ KEY-----',
-      'g'
-    );
-
-    const public_key = signer_key.exportKey('public').replaceAll(regex, '');
-
-    if (public_key !== this.fromAddress)
-      throw new Error('You cannot sign transactions from other wallets');
-
-    this.transactionHash = this.calculateHash();
-
-    this.signature = signer_key.sign(this.transactionHash);
-  }
-
-  verifyTransaction() {
-    if (this.fromAddress === null) return true; // for mining rewards
-
-    if (!this.signature || this.signature.length === 0)
-      throw new Error('No valid signature for transaction');
-
-    const key = new RSA().importKey(this.fromAddress, 'public');
-    return key.verify(this.transactionHash, this.signature);
+    return SHA256(
+      this.fromAddress + this.toAddress + this.amount + Date.now()
+    ).toString();
   }
 }
 
@@ -123,9 +100,6 @@ class Blockchain {
 
     if (!transaction.toAddress)
       throw new Error('Transaction must include toAddress');
-
-    if (!transaction.verifyTransaction())
-      throw new Error('Cannot add invalid transaction to blockchain');
 
     this.pendingTransactions.push(transaction);
 
