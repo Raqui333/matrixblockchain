@@ -1,16 +1,16 @@
-# Blockchain em Node.js
+# Blockchain in Node.js
 
-Este repositório contém a implementação de uma blockchain simples em Node.js, com fins de estudo e aprendizado sobre os conceitos fundamentais de blockchain, como blocos, transações e segurança criptográfica. Além disso, inclui uma API desenvolvida com **Express** para interagir com a blockchain.
+This repository contains the implementation of a simple blockchain in Node.js, for the purpose of studying and learning about the fundamental concepts of blockchain, such as blocks, transactions, and cryptographic security. It also includes an API developed with **Express** to interact with the blockchain.
 
-## Objetivo do Projeto
+## Project Objective
 
-Este projeto foi desenvolvido para explorar como uma blockchain funciona internamente, aplicando conceitos de programação em Node.js e utilizando bibliotecas para funções criptográficas essenciais. O projeto inclui a criação de blocos e transações, a validação de dados utilizando criptografia RSA e exposição de endpoints para interagir com a blockchain via API.
+This project was developed to explore how a blockchain works internally, applying Node.js programming concepts and using libraries for essential cryptographic functions. The project includes the creation of blocks and transactions, data validation using RSA encryption, and the exposure of endpoints to interact with the blockchain via an API.
 
-## Requisitos
+## Requirements
 
-Este projeto foi testado com as seguintes dependências:
+This project has been tested with the following dependencies:
 
-- **Node.js**: versão 20.16.0 ou superior
-- **crypto-js**: versão 4.2.0 ou superior (utilizado para funções de hash e criptografia)
-- **node-rsa**: versão 1.1.1 ou superior (utilizado para geração e verificação de chaves)
-- **express**: versão 4.18.2 ou superior (utilizado para a API)
+- **Node.js**: version 20.16.0 or higher
+- **crypto-js**: version 4.2.0 or higher (used for hash and cryptographic functions)
+- **node-rsa**: version 1.1.1 or higher (used for key generation and verification)
+- **express**: version 4.18.2 or higher (used for the API)
