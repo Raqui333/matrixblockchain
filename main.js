@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/createWallet', (req, res) => {
+app.get('/createWallet', (req, res) => {
   const key = RSA({ b: 1024 }); // pair of keys
 
   const regex = new RegExp(
@@ -110,6 +110,51 @@ app.post('/addTransaction', (req, res) => {
   return res.status(200).send({
     message: 'Transaction added to blockchain',
   });
+});
+
+app.post('/login', (req, res) => {
+  const { public_key, private_key } = req.body;
+
+  const key = new RSA();
+
+  const keydata =
+    '-----BEGIN RSA PRIVATE KEY-----' +
+    private_key +
+    '-----END RSA PRIVATE KEY-----';
+
+  key.importKey(keydata, 'pkcs1-private');
+
+  const regex = new RegExp(
+    '-----BEGIN .+ KEY-----|\n|-----END .+ KEY-----',
+    'g'
+  );
+
+  if (key.exportKey('public').replaceAll(regex, '') === public_key)
+    return res.status(200).send({ message: 'logged' });
+
+  return res.status(418).send({ message: 'key pair do not match' });
+});
+
+app.post('/sign', (req, res) => {
+  const { private_key, buffer } = req.body;
+
+  const key = new RSA();
+
+  const keydata =
+    '-----BEGIN RSA PRIVATE KEY-----' +
+    private_key +
+    '-----END RSA PRIVATE KEY-----';
+
+  key.importKey(keydata, 'pkcs1-private');
+
+  const regex = new RegExp(
+    '-----BEGIN .+ KEY-----|\n|-----END .+ KEY-----',
+    'g'
+  );
+
+  const signature = key.sign(buffer, 'base64', 'utf8');
+
+  return res.status(200).send({ signature: signature });
 });
 
 app.listen(PORT, () => {

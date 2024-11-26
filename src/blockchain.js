@@ -112,10 +112,10 @@ class Blockchain {
     for (const block of this.chain) {
       for (const transaction of block.transactions) {
         if (transaction.fromAddress === wallet_address)
-          balance -= transaction.amount;
+          balance -= Number(transaction.amount);
 
         if (transaction.toAddress === wallet_address)
-          balance += transaction.amount;
+          balance += Number(transaction.amount);
       }
     }
 
