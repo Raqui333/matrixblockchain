@@ -14,3 +14,22 @@ This project has been tested with the following dependencies:
 - **crypto-js**: version 4.2.0 or higher (used for hash and cryptographic functions)
 - **node-rsa**: version 1.1.1 or higher (used for key generation and verification)
 - **express**: version 4.18.2 or higher (used for the API)
+
+## Installation
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/Raqui333/matrixblockchain.git
+   cd matrixblockchain
+   ```
+
+2. **Install the dependences**
+
+   ```bash
+   npm install
+   ```
+3. **Run the project**
+   ```bash
+   npm run
+   ```

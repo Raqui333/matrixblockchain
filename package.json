@@ -4,6 +4,7 @@
   "description": "guess what",
   "main": "main.js",
   "scripts": {
+    "run": "node server.js",
     "dev": "node server.js",
     "test": "npx jest --coverage"
   },
